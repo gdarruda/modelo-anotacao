@@ -40,3 +40,30 @@ class BancoMySQL():
         cursor_paragrafo.execute(insert_paragrafo, dados_paragrafo)
 
         self.conexao.commit()
+
+    def seleciona_anotadores(self):
+
+        cursor_anotadores = self.conexao.cursor()
+
+        query_noticia = ('select id_anotacao, nome from anotacoes')
+        cursor_anotadores.execute(query_noticia)
+
+        return cursor_anotadores
+
+    def seleciona_noticias(self, id_anotacao):
+
+        cursor_anotadores = self.conexao.cursor()
+
+        query_noticia = ('select id_noticia from noticias_x_anotacao where id_anotacao = %s')
+        cursor_anotadores.execute(query_noticia,(id_anotacao,))
+
+        return cursor_anotadores
+
+    def seleciona_paragrafos(self, id_anotacao, id_noticia):
+
+        cursor_paragrafo = self.conexao.cursor()
+
+        query_noticia = ('select polaridade from noticias_x_paragrafo where id_anotacao = %s and id_noticia = %s order by id_paragrafo')
+        cursor_paragrafo.execute(query_noticia,(id_anotacao,id_noticia))
+
+        return cursor_paragrafo

@@ -44,10 +44,6 @@ class CarregadorAnotacoes():
             #Para cada paragrafo anottado, extrai as informacaores necesarias
             for paragrafo in raiz[1]:
 
-                if paragrafo.attrib['state'] != 'active':
-                    print 'Que isso?'
-                    continue
-
                 #Sequencial do paragrafo
                 id_paragrafo = int(paragrafo.attrib['id'])
 
@@ -61,17 +57,20 @@ class CarregadorAnotacoes():
                 #Polaridade atribuida
                 polaridade = paragrafo.attrib['features'][11:]
 
-                if polaridade == 'positivo':
-                    polaridade = 'PO'
-                elif polaridade == 'negativo':
-                    polaridade = 'NG'
-                elif polaridade == 'neutro':
-                    polaridade = 'NE'
-                elif polaridade == 'sem-entidade':
-                    polaridade = 'SE'
+                if paragrafo.attrib['state'] != 'active':
+                    polaridade = ''
+                else:
+                    if polaridade == 'positivo':
+                        polaridade = 'PO'
+                    elif polaridade == 'negativo':
+                        polaridade = 'NG'
+                    elif polaridade == 'neutro':
+                        polaridade = 'NE'
+                    elif polaridade == 'sem-entidade':
+                        polaridade = 'SE'
 
                 #Recupera a entidade definida pelo anotador
-                if polaridade != 'SE':
+                if polaridade in ['NE', 'PO', 'NG']:
                     try:
                         entidade = paragrafo.attrib['comment']
                     except:

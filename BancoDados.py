@@ -50,6 +50,15 @@ class BancoMySQL():
 
         return cursor_anotadores
 
+    def seleciona_noticias_corpus(self):
+
+        cursor_noticias = self.conexao.cursor()
+
+        query_noticias = ('select id_noticia from noticias where corpo != \'\' order by id_noticia desc')
+        cursor_noticias.execute(query_noticias)
+
+        return cursor_noticias
+
     def seleciona_noticias(self, id_anotacao):
 
         cursor_anotadores = self.conexao.cursor()
@@ -63,7 +72,33 @@ class BancoMySQL():
 
         cursor_paragrafo = self.conexao.cursor()
 
-        query_noticia = ('select polaridade from noticias_x_paragrafo where id_anotacao = %s and id_noticia = %s order by id_paragrafo')
+        query_noticia = ('select replace(polaridade,\'SE\',\'\') polaridade from noticias_x_paragrafo where id_anotacao = %s and id_noticia = %s  order by id_paragrafo')
         cursor_paragrafo.execute(query_noticia,(id_anotacao,id_noticia))
 
         return cursor_paragrafo
+
+    def adiciona_noticia_corpus(self, id_paragrafo, id_noticia, polaridade):
+
+        cursor_noticia = self.conexao.cursor()
+
+        insert_noticia = ('insert into noticias_corpus (id_noticia, id_paragrafo, polaridade) VALUES (%s, %s, %s)')
+        dados_noticia = (id_noticia, id_paragrafo, polaridade)
+
+        cursor_noticia.execute(insert_noticia, dados_noticia)
+
+        self.conexao.commit()
+
+    def seleciona_polaridade(self, id_noticia):
+
+        cursor_polaridade = self.conexao.cursor()
+
+        query_polaridade = ('select count(*) contador, id_paragrafo, IF(char_length(polaridade)>0, polaridade,\'NC\') polaridade ' +
+                            'from noticias_x_paragrafo ncp ' +
+                            'where id_noticia = %s ' +
+                            'group by id_paragrafo, IF(char_length(polaridade)>0, polaridade,\'NC\') ' +
+                            'order by id_paragrafo')
+
+        cursor_polaridade.execute(query_polaridade,(id_noticia,))
+
+        return cursor_polaridade
+

@@ -30,3 +30,11 @@ CREATE TABLE noticias_x_paragrafo
 );
 
 ALTER TABLE noticias_x_paragrafo ADD CONSTRAINT fk_paragrafos_x_noticias FOREIGN KEY (id_noticia, id_anotacao) REFERENCES noticias_x_anotacao(id_noticia, id_anotacao);
+
+CREATE TABLE noticias_corpus
+(
+ id_noticia   INTEGER,
+ id_paragrafo INTEGER,
+ polaridade   VARCHAR(2),
+ PRIMARY KEY  (id_noticia, id_paragrafo)
+);

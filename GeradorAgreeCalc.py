@@ -37,10 +37,12 @@ class GeradorAgreeCalc():
 
         #Sequencial de noticias
         id_sequencial_noticia = 1
-        id_sequencial_paragrafo = 1
 
         #Para cada anotador, gera o documento do anotador
         for (id_anotacao, nome) in cursor_anotadores:
+
+            #Sequencial de numero dos paragrafos
+            id_sequencial_paragrafo = 1
 
             # Cria o XML do anotador
             anotador = etree.Element('plainDocument')

@@ -30,7 +30,11 @@ class CarregadorAnotacoes():
             arquivo_txt = raiz[0][0].text
 
             #Abre o arquivo .txt com a noticica
-            Noticia_texto = open(anotador + '/Corpus/' + arquivo_txt)
+            try:
+                Noticia_texto = open(anotador + '/Corpus/' + arquivo_txt)
+            except:
+                print subdiretorio[0]
+                continue
 
             #Recupera o texto completo da noticia
             texto_noticia = Noticia_texto.read().decode('utf8')
@@ -72,7 +76,7 @@ class CarregadorAnotacoes():
                 #Recupera a entidade definida pelo anotador
                 if polaridade in ['NE', 'PO', 'NG']:
                     try:
-                        entidade = paragrafo.attrib['comment']
+                        entidade = paragrafo.attrib['comment'].upper()
                     except:
                         print id_noticia, id_paragrafo, texto_paragrafo
                         entidade = ''

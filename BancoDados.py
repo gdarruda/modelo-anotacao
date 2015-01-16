@@ -30,12 +30,12 @@ class BancoMySQL():
 
         self.conexao.commit()
 
-    def adiciona_paragrafo(self, id_paragrafo, id_noticia, id_anotacao, paragrafo, ini_posic, fim_posic, polaridade, entidadde):
+    def adiciona_paragrafo(self, id_paragrafo, id_noticia, id_anotacao, paragrafo, ini_posic, fim_posic, polaridade, entidade):
 
         cursor_paragrafo = self.conexao.cursor()
 
-        insert_paragrafo = ('insert into noticias_x_paragrafo values (%s, %s, %s, %s, %s, %s, %s, %s)')
-        dados_paragrafo = (id_paragrafo, id_noticia, id_anotacao, paragrafo, ini_posic, fim_posic, polaridade, entidadde)
+        insert_paragrafo = ('insert into noticias_x_paragrafo values (%s, %s, %s, %s, %s, %s, %s, %s, %s)')
+        dados_paragrafo = (id_paragrafo, id_noticia, id_anotacao, paragrafo, ini_posic, fim_posic, polaridade, entidade, entidade)
 
         cursor_paragrafo.execute(insert_paragrafo, dados_paragrafo)
 

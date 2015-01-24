@@ -20,7 +20,7 @@ class GeradorAgreeCalc():
 
         return 'ann_' + contador_sequencial.zfill(4) + '_polaridade_noticia_' + contador_noticia.zfill(4) + '_a' + contador_anotacao.zfill(2) + '.xml'
 
-    def gera_anotacao(self):
+    def gera_anotacao(self, id_anotacao_inicial, id_anotacao_final):
 
         #Caminho do corpus
         diretorio = 'polaridade'
@@ -30,7 +30,7 @@ class GeradorAgreeCalc():
             os.makedirs(diretorio)
 
         #Processa todos os anotadores
-        cursor_anotadores = self.bd.seleciona_anotadores()
+        cursor_anotadores = self.bd.seleciona_anotadores(id_anotacao_inicial, id_anotacao_final)
 
         #Caminho das informacoes dos anotadores
         subdir_anotadores = 'participants'
@@ -81,10 +81,11 @@ class GeradorAgreeCalc():
                 cursor_paragrafos = self.bd.seleciona_paragrafos(id_anotacao, id_noticia)
 
                 #Para cada paragrafo...
-                for (polaridade,) in cursor_paragrafos:
+                for (polaridade,entidade) in cursor_paragrafos:
 
                     paragrafo = etree.Element('mark',unit=str(id_sequencial_paragrafo))
                     paragrafo.append(etree.Element('ann', value=polaridade, type='polaridade'))
+                    paragrafo.append(etree.Element('ann', value=entidade, type='entidade'))
                     noticia.append(paragrafo)
 
                     #Adiciona uma ao contador de paragrafos

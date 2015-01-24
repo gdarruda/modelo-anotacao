@@ -1,7 +1,7 @@
 from BancoDados import BancoMySQL
 from GeradorAgreeCalc import GeradorAgreeCalc
 from CarregadorAnotacaoes import CarregadorAnotacoes
-from ProcessadorCorpus import ProcessadorCorpus
+from GeradorCorpus import GeradorCorpus
 
 bd = BancoMySQL('garruda', 'garruda', '127.0.0.1', 'noticias')
 
@@ -14,14 +14,14 @@ def carrega_anotacoes():
     # CG.carrega_anotacao('Victor')
     # CG.carrega_anotacao('Bonacin')
 
-def gera_corpus_anotado():
+def gera_corpus_anotado(id_anotacao_inicial, id_anotacao_final):
 
     GAC = GeradorAgreeCalc(bd)
-    GAC.gera_anotacao()
+    GAC.gera_anotacao(id_anotacao_inicial, id_anotacao_final)
 
-def processa_corpus():
+def gerador_corpus_ouro(id_anotacao_inicial, id_anotacao_final):
 
-    PC = ProcessadorCorpus(bd)
-    PC.processa_corpus()
+    GC = GeradorCorpus(bd)
+    GC.gera_corpus_ouro(id_anotacao_inicial, id_anotacao_final)
 
-carrega_anotacoes()
+gerador_corpus_ouro(40,44)

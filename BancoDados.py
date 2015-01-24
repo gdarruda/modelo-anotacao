@@ -52,6 +52,25 @@ class BancoMySQL():
 
         return cursor_anotadores
 
+    def seleciona_noticias_anotacao(self, id_anotacao):
+
+        cursor_noticias = self.conexao.cursor()
+
+        query_noticias = ('select id_noticia from noticias_x_anotacao id_anotacao where id_anotacao = %s')
+        cursor_noticias.execute(query_noticias,(id_anotacao,))
+
+        return cursor_noticias
+
+    def seleciona_paragrafos_anotacao(self, id_anotacao, id_noticia):
+
+        cursor_paragrafos = self.conexao.cursor()
+
+        query_noticias = ('select nap.polaridade, nap.entidade entidade_anotador, np.entidade entidade_corpus from noticias_x_anotacao_x_paragrafo nap join noticias_x_paragrafo np on np.id_noticia = nap.id_noticia and np.id_paragrafo = nap.id_paragrafo where nap.id_noticia = %s and nap.id_anotacao = %s')
+        cursor_paragrafos.execute(query_noticias,(id_noticia, id_anotacao))
+
+        return cursor_paragrafos
+
+
     def seleciona_paragrafos_corpus(self):
 
         cursor_paragrafos = self.conexao.cursor()

@@ -20,7 +20,7 @@ class GeradorAgreeCalc():
 
         return 'ann_' + contador_sequencial.zfill(4) + '_polaridade_noticia_' + contador_noticia.zfill(4) + '_a' + contador_anotacao.zfill(2) + '.xml'
 
-    def gera_anotacao(self, id_anotacao_inicial, id_anotacao_final):
+    def gera_anotacao(self, id_anotacao_inicial, id_anotacao_final, padraoOuro):
 
         #Caminho do corpus
         diretorio = 'polaridade'
@@ -63,7 +63,7 @@ class GeradorAgreeCalc():
             arquivo_anotador.write(etree.tostring(anotador, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
             arquivo_anotador.close()
 
-            cursor_noticias = self.bd.seleciona_noticias(id_anotacao)
+            cursor_noticias = self.bd.seleciona_noticias_anotacao(id_anotacao)
 
             #Para cada noticia classificada pelo anotador...
             for (id_noticia,) in cursor_noticias:
@@ -78,14 +78,20 @@ class GeradorAgreeCalc():
                 noticia.append(etree.Element('info', type='source', value=str(id_noticia)))
                 noticia.append(etree.Element('info', type='source-corpus', value='noticias'))
 
-                cursor_paragrafos = self.bd.seleciona_paragrafos(id_anotacao, id_noticia)
+                cursor_paragrafos = self.bd.seleciona_paragrafos_anotacao(id_anotacao, id_noticia)
 
                 #Para cada paragrafo...
-                for (polaridade,entidade) in cursor_paragrafos:
+                for (polaridade, entidade_anotador, entidade_corpus) in cursor_paragrafos:
 
                     paragrafo = etree.Element('mark',unit=str(id_sequencial_paragrafo))
-                    paragrafo.append(etree.Element('ann', value=polaridade, type='polaridade'))
-                    paragrafo.append(etree.Element('ann', value=entidade, type='entidade'))
+
+                    #Verifica se a entidade selecionada pelo anotador bate com o padrao, senao desconsidera a classificacao
+                    if not padraoOuro or entidade_anotador == entidade_corpus:
+                        paragrafo.append(etree.Element('ann', value=polaridade, type='polaridade'))
+                    else:
+                        paragrafo.append(etree.Element('ann', value='', type='polaridade'))
+
+                    paragrafo.append(etree.Element('ann', value=entidade_anotador, type='entidade'))
                     noticia.append(paragrafo)
 
                     #Adiciona uma ao contador de paragrafos

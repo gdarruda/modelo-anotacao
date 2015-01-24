@@ -14,14 +14,15 @@ def carrega_anotacoes():
     # CG.carrega_anotacao('Victor')
     # CG.carrega_anotacao('Bonacin')
 
-def gera_corpus_anotado(id_anotacao_inicial, id_anotacao_final):
+def gera_corpus_anotado(id_anotacao_inicial, id_anotacao_final, padraoOuro):
 
     GAC = GeradorAgreeCalc(bd)
-    GAC.gera_anotacao(id_anotacao_inicial, id_anotacao_final)
+    GAC.gera_anotacao(id_anotacao_inicial, id_anotacao_final, padraoOuro)
 
 def gerador_corpus_ouro(id_anotacao_inicial, id_anotacao_final):
 
     GC = GeradorCorpus(bd)
     GC.gera_corpus_ouro(id_anotacao_inicial, id_anotacao_final)
 
-gerador_corpus_ouro(40,44)
+# gerador_corpus_ouro(40,44)
+gera_corpus_anotado(40,44,True)

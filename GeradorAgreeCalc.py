@@ -39,7 +39,7 @@ class GeradorAgreeCalc():
         id_sequencial_noticia = 1
 
         #Para cada anotador, gera o documento do anotador
-        for (id_anotacao, nome) in cursor_anotadores:
+        for (id_grupo, nome) in cursor_anotadores:
 
             #Sequencial de numero dos paragrafos
             id_sequencial_paragrafo = 1
@@ -48,7 +48,7 @@ class GeradorAgreeCalc():
             anotador = etree.Element('plainDocument')
 
             #Adiciona informacoes basicas dos anotadores
-            anotador.append(etree.Element('info', type='id', value='a' + str(id_anotacao)))
+            anotador.append(etree.Element('info', type='id', value='a' + str(id_grupo)))
             anotador.append(etree.Element('target-corpus', type='polaridade'))
 
             #Monta o diretorio completo
@@ -59,11 +59,11 @@ class GeradorAgreeCalc():
                 os.makedirs(full_dir)
 
             #Cria o arquivo do anotador e imprime o xml
-            arquivo_anotador = open(os.path.join(full_dir, self.gera_nome_anotador(id_anotacao)), 'w')
+            arquivo_anotador = open(os.path.join(full_dir, self.gera_nome_anotador(id_grupo)), 'wb')
             arquivo_anotador.write(etree.tostring(anotador, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
             arquivo_anotador.close()
 
-            cursor_noticias = self.bd.seleciona_noticias_anotacao(id_anotacao)
+            cursor_noticias = self.bd.seleciona_noticias_anotacao(id_grupo)
 
             #Para cada noticia classificada pelo anotador...
             for (id_noticia,) in cursor_noticias:
@@ -74,11 +74,11 @@ class GeradorAgreeCalc():
                 #Adiciona informacoes de cabecalho
                 noticia.append(etree.Element('info', type='id', value=str(id_sequencial_noticia)))
                 noticia.append(etree.Element('info', type='scheme', value='polaridade'))
-                noticia.append(etree.Element('info', type='annotator', value= 'a' + str(id_anotacao)))
+                noticia.append(etree.Element('info', type='annotator', value= 'a' + str(id_grupo)))
                 noticia.append(etree.Element('info', type='source', value=str(id_noticia)))
                 noticia.append(etree.Element('info', type='source-corpus', value='noticias'))
 
-                cursor_paragrafos = self.bd.seleciona_paragrafos_anotacao(id_anotacao, id_noticia)
+                cursor_paragrafos = self.bd.seleciona_paragrafos_anotacao(id_grupo, id_noticia)
 
                 #Para cada paragrafo...
                 for (polaridade, entidade_anotador, entidade_corpus) in cursor_paragrafos:
@@ -97,7 +97,7 @@ class GeradorAgreeCalc():
                     #Adiciona uma ao contador de paragrafos
                     id_sequencial_paragrafo += 1
 
-                arquivo_noticia = open(os.path.join(diretorio, self.gera_nome_noticia(id_sequencial_noticia, id_anotacao, id_noticia)),'w')
+                arquivo_noticia = open(os.path.join(diretorio, self.gera_nome_noticia(id_sequencial_noticia, id_grupo, id_noticia)),'wb')
                 arquivo_noticia.write(etree.tostring(noticia, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
                 arquivo_noticia.close()
 

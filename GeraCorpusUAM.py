@@ -17,16 +17,12 @@ class GeraCorpus(object):
         noticias_incluidas = set()
 
         # Monta dicionario para verificar se determinada noticia eh elegivel
-        with open(os.path.join('noticias_incluidas', 'corpus.csv')) as arquivocsv:
-
+        with open(os.path.join('noticias_incluidas', 'corpus_2.txt')) as arquivocsv:
             # Transforma em um objeto iteravel
             linhas = csv.reader(arquivocsv, delimiter=';')
 
             for linha in linhas:
-
-                # Se a linha for 'Incluida', adiciona a colecao
-                if linha[1] == 'Incluida':
-                    noticias_incluidas.add(int(linha[0]))
+                noticias_incluidas.add(int(linha[0]))
 
         return noticias_incluidas
 
@@ -66,7 +62,7 @@ class GeraCorpus(object):
         noticias_incluidas = self.carrega_lista_noticias()
 
         # Procura todas as noticias extraidas pelo sistema
-        cursor_noticias = self.bd.seleciona_noticias()
+        cursor_noticias = self.bd.seleciona_todas_noticia()
 
         # Caminho escolhido
         caminho = 'UAM'
@@ -112,7 +108,7 @@ class GeraCorpus(object):
 
         # Seleciona os IDs das noticias de forma ordenada
         id_noticias = dicionario_noticias.keys()
-        id_noticias.sort(reverse=True)
+        sorted(id_noticias, reverse=True)
 
         # Para cada noticia, gera o arquivo texto
         for id_noticia in id_noticias:
@@ -121,7 +117,7 @@ class GeraCorpus(object):
             arquivo_noticia = open(
                 os.path.join(caminho, str(id_noticia) + '.txt'), 'w')
             arquivo_noticia.write(self.gera_texto(
-                dicionario_noticias[id_noticia], matriz_similaridade).encode('utf-8'))
+                dicionario_noticias[id_noticia], matriz_similaridade))
             arquivo_noticia.close()
 
-        print 'Segmentos gerados: ' + str(self.segmentos_gerados)
+        print ('Segmentos gerados: ' + str(self.segmentos_gerados))

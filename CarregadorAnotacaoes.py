@@ -33,11 +33,11 @@ class CarregadorAnotacoes():
             try:
                 Noticia_texto = open(anotador + '/Corpus/' + arquivo_txt)
             except:
-                print subdiretorio[0]
+                print (subdiretorio[0])
                 continue
 
             #Recupera o texto completo da noticia
-            texto_noticia = Noticia_texto.read().decode('utf8')
+            texto_noticia = Noticia_texto.read()
 
             #Adiciona noticia ao banco de dado, extraindo as informacoes do xml
             id_noticia = arquivo_txt[arquivo_txt.find('/') + 1:arquivo_txt.find('.')]
@@ -78,7 +78,7 @@ class CarregadorAnotacoes():
                     try:
                         entidade = paragrafo.attrib['comment'].upper()
                     except:
-                        print id_noticia, id_paragrafo, texto_paragrafo
+                        print (id_noticia, id_paragrafo, texto_paragrafo)
                         entidade = ''
                 else:
                     entidade = ''

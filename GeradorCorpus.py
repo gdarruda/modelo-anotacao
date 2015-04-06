@@ -10,7 +10,7 @@ class GeradorCorpus():
          chave_maioria = ''
 
          #Obtem a chave com maior quantidade de votos
-         for chave, valor in dicionario.iteritems():
+         for chave, valor in dicionario.items():
 
             if valor > valor_maioria:
                 valor_maioria = valor
@@ -21,7 +21,7 @@ class GeradorCorpus():
 
          return (quantidade_maioria, chave_maioria)
 
-    def gera_corpus_ouro(self, id_anotacao_inicio, id_anotacao_fim):
+    def gera_corpus_ouro(self, id_grupo_inicio, id_grupo_fim):
 
         cursor_paragrafos = self.bd.seleciona_paragrafos_corpus()
 
@@ -29,7 +29,7 @@ class GeradorCorpus():
         for (id_noticia, id_paragrafo, entidade_minerva, polaridade_minerva) in cursor_paragrafos:
 
             #Recupera todas as anotacoes de paragrafo no intervalo desejado
-            cursor_classificado = self.bd.seleciona_resultados_anotacao(id_noticia, id_paragrafo, id_anotacao_inicio, id_anotacao_fim)
+            cursor_classificado = self.bd.seleciona_resultados_anotacao(id_noticia, id_paragrafo, id_grupo_inicio, id_grupo_fim)
 
             #Para cada paragrafo, faz o dicionario de polaridades
             dicionario_entidades = dict()
@@ -48,7 +48,7 @@ class GeradorCorpus():
                 else:
                     dicionario_entidades[entidade] = 1
 
-            #Caso haja voto de Minerva, adiciona ao conjunto
+            # Caso haja voto de Minerva, adiciona ao conjunto
             if entidade_minerva != None:
                 dicionario_entidades[entidade_minerva] = dicionario_entidades[entidade_minerva] + 1
 
@@ -57,7 +57,7 @@ class GeradorCorpus():
 
             #Nesse caso, nao eh possivel definir a maioria
             if total_entidade > 1:
-                print id_noticia, id_paragrafo, str(dicionario_entidades).encode('utf8')
+                print (id_noticia, id_paragrafo, str(dicionario_entidades))
                 continue
             else:
                 self.bd.atualiza_entidade_paragrafo(id_noticia, id_paragrafo, entidade_maioria)
@@ -74,7 +74,7 @@ class GeradorCorpus():
                     else:
                         dicionario_polaridade[polaridade] = 1
 
-            #Caso haja voto de Minerva, adiciona ao conjunto
+            # Caso haja voto de Minerva, adiciona ao conjunto
             if polaridade_minerva != None:
                 # print id_noticia, id_paragrafo
                 dicionario_polaridade[polaridade_minerva] = dicionario_polaridade[polaridade_minerva] + 1
@@ -84,7 +84,7 @@ class GeradorCorpus():
 
             # print polaridade_maioria, dicionario_polaridade
             if total_polaridade > 1:
-                print id_noticia, id_paragrafo, entidade_maioria.encode('utf8'), str(dicionario_polaridade).encode('utf8')
+                print (id_noticia, id_paragrafo, entidade_maioria, str(dicionario_polaridade))
                 continue
             else:
                 self.bd.atualiza_polaridade_paragrafo(id_noticia, id_paragrafo, polaridade_maioria)

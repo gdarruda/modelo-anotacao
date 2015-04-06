@@ -88,12 +88,12 @@ class BancoMySQL():
 
         return cursor_paragrafos
 
-    def seleciona_resultados_anotacao(self, id_noticia, id_paragrafo, id_anotacao_inicial, id_anotacao_final):
+    def seleciona_resultados_anotacao(self, id_noticia, id_paragrafo, id_grupo_inicial, id_grupo_final):
 
         cursor_anotacao = self.conexao.cursor()
 
-        query_paragrafos = ('select polaridade, entidade_normalizada from noticias_x_anotacao_x_paragrafo where id_anotacao between %s and %s and id_noticia = %s and id_paragrafo = %s')
-        cursor_anotacao.execute(query_paragrafos, (id_anotacao_inicial,id_anotacao_final, id_noticia, id_paragrafo))
+        query_paragrafos = ('select polaridade, entidade_normalizada from noticias_x_anotacao_x_paragrafo nap join anotacoes a on a.id_anotacao = nap.id_anotacao where a.id_grupo between %s and %s and id_noticia = %s and id_paragrafo = %s')
+        cursor_anotacao.execute(query_paragrafos, (id_grupo_inicial,id_grupo_final, id_noticia, id_paragrafo))
 
         return cursor_anotacao
 

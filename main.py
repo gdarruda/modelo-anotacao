@@ -3,6 +3,7 @@ from GeradorAgreeCalc import GeradorAgreeCalc
 from CarregadorAnotacaoes import CarregadorAnotacoes
 from GeraCorpusUAM import GeraCorpus
 from GeradorCorpus import GeradorCorpus
+from CorpusXML import CorpusXML
 
 bd = BancoMySQL('garruda', 'garruda', '127.0.0.1', 'noticias')
 
@@ -29,7 +30,13 @@ def gera_noticias():
     GC = GeraCorpus(bd)
     GC.gera_noticias()
 
-gerador_corpus_ouro(40,44)
-# gera_corpus_anotado(46,52,False)
+def gera_XML():
+    CX = CorpusXML(bd)
+    CX.gera_corpus()
+
+
+# gerador_corpus_ouro(40,44)
+# gera_corpus_anotado(40,44,False)
 # gera_noticias()
 # carrega_anotacoes()
+gera_XML()

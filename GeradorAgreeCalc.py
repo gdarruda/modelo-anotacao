@@ -66,7 +66,7 @@ class GeradorAgreeCalc():
             cursor_noticias = self.bd.seleciona_noticias_anotacao(id_grupo)
 
             #Para cada noticia classificada pelo anotador...
-            for (id_noticia,) in cursor_noticias:
+            for (id_noticia, entidade_anotador, entidade_corpus) in cursor_noticias:
 
                 #Cria o XML da noticia
                 noticia = etree.Element('annotation')
@@ -103,7 +103,3 @@ class GeradorAgreeCalc():
 
                 #Adiciona um ao contador de noticias
                 id_sequencial_noticia += 1
-
-
-
-

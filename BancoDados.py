@@ -1,11 +1,11 @@
-import pymysql
+import mysql.connector
 
 class BancoMySQL():
 
     'Classe para manipulacao de banco de dados em MySQL'
 
     def __init__(self, usuario, senha, host, banco):
-        self.conexao = pymysql.connect(host=host, unix_socket='/tmp/mysql.sock', user=usuario, passwd=senha, db=banco)
+        self.conexao = mysql.connector.connect(user=usuario, password=senha, host='127.0.0.1', database=banco, buffered=True)
 
     def adiciona_anotacao(self, nome):
 
@@ -64,7 +64,14 @@ class BancoMySQL():
 
         cursor_noticias = self.conexao.cursor()
 
-        query_noticias = ('select nxa.id_noticia from noticias_x_anotacao nxa join anotacoes a on nxa.id_anotacao = a.id_anotacao join noticias n on n.id_noticia = nxa.id_noticia where a.id_grupo = %s and n.ind_corpus = \'S\'')
+        query_noticias = ("""select nxa.id_noticia, n.corpo
+                            from noticias_x_anotacao nxa
+                            join anotacoes a
+                            on nxa.id_anotacao = a.id_anotacao
+                            join noticias n
+                            on n.id_noticia = nxa.id_noticia
+                            where a.id_grupo = %s
+                            and n.ind_corpus = \'S\'""")
         cursor_noticias.execute(query_noticias,(id_grupo,))
 
         return cursor_noticias
@@ -73,7 +80,7 @@ class BancoMySQL():
 
         cursor_paragrafos = self.conexao.cursor()
 
-        query_noticias = ('select nap.polaridade, nap.entidade entidade_anotador, np.entidade entidade_corpus from noticias_x_anotacao_x_paragrafo nap join noticias_x_paragrafo np on np.id_noticia = nap.id_noticia and np.id_paragrafo = nap.id_paragrafo join anotacoes a on a.id_anotacao = nap.id_anotacao  where nap.id_noticia = %s and a.id_grupo = %s')
+        query_noticias = ('select nap.polaridade, nap.entidade_normalizada entidade_anotador, np.entidade entidade_corpus from noticias_x_anotacao_x_paragrafo nap join noticias_x_paragrafo np on np.id_noticia = nap.id_noticia and np.id_paragrafo = nap.id_paragrafo join anotacoes a on a.id_anotacao = nap.id_anotacao  where nap.id_noticia = %s and a.id_grupo = %s')
         cursor_paragrafos.execute(query_noticias,(id_noticia, id_grupo))
 
         return cursor_paragrafos
@@ -92,7 +99,7 @@ class BancoMySQL():
 
         cursor_anotacao = self.conexao.cursor()
 
-        query_paragrafos = ('select polaridade, entidade_normalizada from noticias_x_anotacao_x_paragrafo nap join anotacoes a on a.id_anotacao = nap.id_anotacao where a.id_grupo between %s and %s and id_noticia = %s and id_paragrafo = %s')
+        query_paragrafos = ('select polaridade, entidade_normalizada entidade from noticias_x_anotacao_x_paragrafo nap join anotacoes a on a.id_anotacao = nap.id_anotacao where a.id_grupo between %s and %s and id_noticia = %s and id_paragrafo = %s')
         cursor_anotacao.execute(query_paragrafos, (id_grupo_inicial,id_grupo_final, id_noticia, id_paragrafo))
 
         return cursor_anotacao
@@ -114,3 +121,38 @@ class BancoMySQL():
         cursor_polaridade.execute(updata_anotador,(polaridade, id_noticia, id_paragrafo))
 
         self.conexao.commit()
+
+    def seleciona_noticia_corpus(self):
+
+        cursor_noticias = self.conexao.cursor()
+
+        query_noticias = ('''select n.id_noticia, n.corpo, pt.nome perfil
+                                from noticias n
+                                join perfis_twitter pt
+                                on   pt.id_perfil = n.id_perfil
+                                where ind_corpus = \'S\'
+                                order by id_noticia''')
+        cursor_noticias.execute(query_noticias)
+
+        return cursor_noticias
+
+    def seleciona_info_anotadores(self):
+
+        cursor_anotador = self.conexao.cursor()
+
+        query_anotador = ('select id_anotador, genero, area, nivel_estudo from anotador')
+        cursor_anotador.execute(query_anotador)
+
+        return cursor_anotador
+
+    def seleciona_paragrafo_noticia(self, id_noticia):
+
+        cursor_paragrafos = self.conexao.cursor()
+
+        query_paragrafos = ('''select id_paragrafo, paragrafo
+                                from noticias_x_paragrafo ncp
+                                where ncp.id_noticia = %s
+                                order by id_paragrafo''')
+        cursor_paragrafos.execute(query_paragrafos, (id_noticia,))
+
+        return cursor_paragrafos

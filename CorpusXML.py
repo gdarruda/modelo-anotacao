@@ -37,11 +37,12 @@ class CorpusXML():
 
     def gera_participantes(self):
 
-        for (id_anotador, genero, area, nivel_estudo) in self.bd.seleciona_info_anotadores():
+        for (id_anotador, genero, area, nivel_estudo, idade) in self.bd.seleciona_info_anotadores():
 
             anotador = etree.Element('plainDocument')
             anotador.append(etree.Element('info', type='id', value='a' + str(id_anotador)))
             anotador.append(etree.Element('info', type='gender', value=genero))
+            anotador.append(etree.Element('info', type='age', value=str(idade)))
             anotador.append(etree.Element('info', type='area', value=area))
             anotador.append(etree.Element('info', type='degree', value=nivel_estudo))
             anotador.append(etree.Element('info', type='target-corpus', value='C1'))
@@ -126,10 +127,17 @@ class CorpusXML():
 
             anotacoes_paragrafo = {}
 
-            for (id_paragrafo, paragrafo) in self.bd.seleciona_paragrafo_noticia(id_noticia):
+            for (id_paragrafo, paragrafo, polaridade_ouro, entidade_ouro) in self.bd.seleciona_paragrafo_noticia(id_noticia):
 
                 segmento = etree.Element('unit', id=str(seq_paragrafo).zfill(4))
-                segmento.text = paragrafo
+
+                texto_paragrafo = etree.Element('text')
+                texto_paragrafo.text = paragrafo
+                segmento.append(texto_paragrafo)
+
+                segmento.append(etree.Element('ann', type='polarity', value=polaridade_ouro))
+                segmento.append(etree.Element('ann', type='entity', value=entidade_ouro))
+
                 segmentacao[0].append(segmento)
 
                 for id_anotador, id_anotacao in anotacoes.iteritems():

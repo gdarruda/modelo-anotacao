@@ -140,7 +140,7 @@ class BancoMySQL():
 
         cursor_anotador = self.conexao.cursor()
 
-        query_anotador = ('select id_anotador, genero, area, nivel_estudo from anotador')
+        query_anotador = ('select id_anotador, genero, area, nivel_estudo, idade from anotador')
         cursor_anotador.execute(query_anotador)
 
         return cursor_anotador
@@ -149,7 +149,7 @@ class BancoMySQL():
 
         cursor_paragrafos = self.conexao.cursor()
 
-        query_paragrafos = ('''select id_paragrafo, paragrafo
+        query_paragrafos = ('''select id_paragrafo, paragrafo, polaridade, entidade
                                 from noticias_x_paragrafo ncp
                                 where ncp.id_noticia = %s
                                 order by id_paragrafo''')

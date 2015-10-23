@@ -126,7 +126,7 @@ class BancoMySQL():
 
         cursor_noticias = self.conexao.cursor()
 
-        query_noticias = ('''select n.id_noticia, n.corpo, pt.nome perfil
+        query_noticias = ('''select n.id_noticia, n.corpo, n.id_perfil
                                 from noticias n
                                 join perfis_twitter pt
                                 on   pt.id_perfil = n.id_perfil
@@ -144,6 +144,15 @@ class BancoMySQL():
         cursor_anotador.execute(query_anotador)
 
         return cursor_anotador
+
+    def seleciona_perfis_twitter(self):
+
+        cursor_perfis = self.conexao.cursor()
+
+        query_cursor = 'select id_perfil, nome from perfis_twitter'
+        cursor_perfis.execute(query_cursor)
+
+        return cursor_perfis
 
     def seleciona_paragrafo_noticia(self, id_noticia):
 

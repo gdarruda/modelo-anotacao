@@ -65,12 +65,12 @@ class CorpusXML():
 
         gold_standard = etree.Element('participant')
         gold_standard.append(etree.Element('info', type='multiple', value='most common'))
-        gold_standard.append(etree.Element('info', type='id', value='gold'))
+        gold_standard.append(etree.Element('info', type='id', value='m'))
 
         for anotador in lista_anotadores:
             gold_standard.append(etree.Element('info', type='annotator', value=anotador))
 
-        arquivo_gold_standard = open(os.path.join(self.caminho_anotadores, 'part_gold_polarity.xml'), 'w')
+        arquivo_gold_standard = open(os.path.join(self.caminho_anotadores, 'part_m_polarity.xml'), 'w')
         arquivo_gold_standard.write(etree.tostring(gold_standard, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
         arquivo_gold_standard.close()
 
@@ -146,7 +146,7 @@ class CorpusXML():
 
     def gera_nome_gold(self, id_anotacao, id_segmentacao):
 
-        return 'ann_' + id_anotacao + '_polarity_paragraphs_' + id_segmentacao + '_M.xml'
+        return 'ann_' + id_anotacao + '_polarity_paragraphs_' + id_segmentacao + '_m.xml'
 
     def gera_gold(self, seq_anotacao, seq_noticia):
 
